@@ -15,7 +15,7 @@
  */
 package com.reactifyx.utils;
 
-import com.reactifyx.annotation.Autowired;
+import com.reactifyx.Autowired;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;

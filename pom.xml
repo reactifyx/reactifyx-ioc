@@ -65,6 +65,7 @@
 	<!-- The properties for all the library          -->
 	<!-- =========================================== -->
 	<properties>
+		<java.version>11</java.version>
 		<maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
 		<central-publishing-maven-plugin.version>0.6.0</central-publishing-maven-plugin.version>
 		<nexus-staging-maven-plugin.version>1.7.0</nexus-staging-maven-plugin.version>
@@ -73,6 +74,7 @@
 		<maven-source-plugin.version>3.3.1</maven-source-plugin.version>
 		<maven-jar-plugin.version>3.4.2</maven-jar-plugin.version>
 		<reflections.version>0.10.2</reflections.version>
+		<junit.version>5.8.2</junit.version>
 	</properties>
 
 	<dependencies>
@@ -80,6 +82,11 @@
 			<groupId>org.reflections</groupId>
 			<artifactId>reflections</artifactId>
 			<version>${reflections.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter</artifactId>
+			<version>${junit.version}</version>
 		</dependency>
 	</dependencies>
 

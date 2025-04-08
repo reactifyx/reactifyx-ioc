@@ -41,7 +41,7 @@ public class ImplementationContainer {
                     implementationClasses.stream().findFirst();
             return optional.get().getKey();
         } else {
-            final String findBy = (qualifier == null || qualifier.trim().length() == 0) ? fieldName : qualifier;
+            final String findBy = (qualifier == null || qualifier.trim().isEmpty()) ? fieldName : qualifier;
             Optional<Map.Entry<Class<?>, Class<?>>> optional = implementationClasses.stream()
                     .filter(entry -> entry.getKey().getSimpleName().equalsIgnoreCase(findBy))
                     .findAny();

@@ -13,12 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.reactifyx;
+package com.reactifyx.core;
 
-import com.reactifyx.annotation.*;
-import com.reactifyx.core.BeanContainer;
-import com.reactifyx.core.CircularDependencyDetector;
-import com.reactifyx.core.ImplementationContainer;
+import com.reactifyx.*;
 import com.reactifyx.exception.IoCBeanNotFound;
 import com.reactifyx.exception.IoCCircularDepException;
 import com.reactifyx.exception.IoCException;
@@ -78,7 +75,7 @@ public class ReactifyIoC {
             throws IOException, ClassNotFoundException, InstantiationException, IllegalAccessException,
                     NoSuchMethodException, InvocationTargetException, IoCBeanNotFound, IoCCircularDepException,
                     URISyntaxException {
-        if (predefinedBeans != null && predefinedBeans.length > 0) {
+        if (predefinedBeans != null) {
             for (Object bean : predefinedBeans) {
                 Class<?>[] interfaces = bean.getClass().getInterfaces();
                 if (interfaces.length == 0) {
