@@ -1,3 +1,18 @@
+/*
+ * Copyright 2024-2025 the original author Hoàng Anh Tiến.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.reactifyx;
 
 import com.reactifyx.annotation.*;
@@ -9,8 +24,6 @@ import com.reactifyx.exception.IoCCircularDepException;
 import com.reactifyx.exception.IoCException;
 import com.reactifyx.utils.ClassLoaderUtil;
 import com.reactifyx.utils.FinderUtil;
-import org.reflections.Reflections;
-
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -21,22 +34,29 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.List;
 import java.util.Set;
+import org.reflections.Reflections;
 
 public class ReactifyIoC {
     private final BeanContainer beanContainer = new BeanContainer();
     private final ImplementationContainer implementationContainer = new ImplementationContainer();
     private final CircularDependencyDetector circularDependencyDetector = new CircularDependencyDetector();
 
-    private ReactifyIoC() {
-    }
+    private ReactifyIoC() {}
 
     public static ReactifyIoC initBeans(Class<?> mainClass, Object... predefinedBeans) {
         try {
             ReactifyIoC instance = new ReactifyIoC();
             instance.initWrapper(mainClass, predefinedBeans);
             return instance;
-        } catch (IOException | ClassNotFoundException | InstantiationException | IllegalAccessException |
-                 InvocationTargetException | NoSuchMethodException | IoCBeanNotFound | IoCCircularDepException | URISyntaxException e) {
+        } catch (IOException
+                | ClassNotFoundException
+                | InstantiationException
+                | IllegalAccessException
+                | InvocationTargetException
+                | NoSuchMethodException
+                | IoCBeanNotFound
+                | IoCCircularDepException
+                | URISyntaxException e) {
             throw new IoCException(e);
         }
     }
@@ -44,27 +64,32 @@ public class ReactifyIoC {
     public <T> T getBean(Class<T> clazz) {
         try {
             return _getBean(clazz);
-        } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
-                NoSuchMethodException | IoCBeanNotFound | IoCCircularDepException e) {
+        } catch (InstantiationException
+                | IllegalAccessException
+                | InvocationTargetException
+                | NoSuchMethodException
+                | IoCBeanNotFound
+                | IoCCircularDepException e) {
             throw new IoCException(e);
         }
     }
 
-    private void initWrapper(Class<?> mainClass, Object[] predefinedBeans) throws IOException, ClassNotFoundException,
-            InstantiationException, IllegalAccessException, NoSuchMethodException,
-            InvocationTargetException, IoCBeanNotFound, IoCCircularDepException, URISyntaxException {
+    private void initWrapper(Class<?> mainClass, Object[] predefinedBeans)
+            throws IOException, ClassNotFoundException, InstantiationException, IllegalAccessException,
+                    NoSuchMethodException, InvocationTargetException, IoCBeanNotFound, IoCCircularDepException,
+                    URISyntaxException {
         if (predefinedBeans != null && predefinedBeans.length > 0) {
-           for (Object bean : predefinedBeans) {
-               Class<?>[] interfaces = bean.getClass().getInterfaces();
-               if (interfaces.length == 0) {
-                   implementationContainer.putImplementationClass(bean.getClass(), bean.getClass());
-               } else {
-                   for (Class<?> interfaceClass : interfaces) {
-                       implementationContainer.putImplementationClass(bean.getClass(), interfaceClass);
-                   }
-               }
-               beanContainer.putBean(bean.getClass(), bean);
-           }
+            for (Object bean : predefinedBeans) {
+                Class<?>[] interfaces = bean.getClass().getInterfaces();
+                if (interfaces.length == 0) {
+                    implementationContainer.putImplementationClass(bean.getClass(), bean.getClass());
+                } else {
+                    for (Class<?> interfaceClass : interfaces) {
+                        implementationContainer.putImplementationClass(bean.getClass(), interfaceClass);
+                    }
+                }
+                beanContainer.putBean(bean.getClass(), bean);
+            }
         }
 
         ComponentScan scan = mainClass.getAnnotation(ComponentScan.class);
@@ -78,9 +103,10 @@ public class ReactifyIoC {
         }
     }
 
-    private void init(String packageName) throws IOException, InstantiationException, IllegalAccessException,
-            NoSuchMethodException, InvocationTargetException, IoCBeanNotFound, IoCCircularDepException, URISyntaxException,
-            ClassNotFoundException {
+    private void init(String packageName)
+            throws IOException, InstantiationException, IllegalAccessException, NoSuchMethodException,
+                    InvocationTargetException, IoCBeanNotFound, IoCCircularDepException, URISyntaxException,
+                    ClassNotFoundException {
         beanContainer.putBean(ReactifyIoC.class, this);
         implementationContainer.putImplementationClass(ReactifyIoC.class, ReactifyIoC.class);
         List<Class<?>> classes = ClassLoaderUtil.getClasses(packageName);
@@ -112,8 +138,9 @@ public class ReactifyIoC {
         }
     }
 
-    private void scanConfigurationClass(List<Class<?>> classes) throws IoCCircularDepException, InvocationTargetException,
-            IllegalAccessException, InstantiationException, NoSuchMethodException {
+    private void scanConfigurationClass(List<Class<?>> classes)
+            throws IoCCircularDepException, InvocationTargetException, IllegalAccessException, InstantiationException,
+                    NoSuchMethodException {
         Deque<Class<?>> configurationClassesQ = new ArrayDeque<>(5);
         for (Class<?> clazz : classes) {
             if (clazz.isAnnotationPresent(Configuration.class)) {
@@ -131,8 +158,9 @@ public class ReactifyIoC {
         }
     }
 
-    private void scanComponentClasses(List<Class<?>> classes) throws IoCCircularDepException, InvocationTargetException,
-            IllegalAccessException, InstantiationException, NoSuchMethodException, IoCBeanNotFound {
+    private void scanComponentClasses(List<Class<?>> classes)
+            throws IoCCircularDepException, InvocationTargetException, IllegalAccessException, InstantiationException,
+                    NoSuchMethodException, IoCBeanNotFound {
         for (Class<?> clazz : classes) {
             if (clazz.isAnnotationPresent(Component.class)) {
                 newInstanceWrapper(clazz);
@@ -140,13 +168,16 @@ public class ReactifyIoC {
         }
     }
 
-    private void scanConfigurationBeans(Class<?> clazz, Object classInstance) throws InvocationTargetException, IllegalAccessException,
-            InstantiationException, NoSuchMethodException, IoCBeanNotFound, IoCCircularDepException {
+    private void scanConfigurationBeans(Class<?> clazz, Object classInstance)
+            throws InvocationTargetException, IllegalAccessException, InstantiationException, NoSuchMethodException,
+                    IoCBeanNotFound, IoCCircularDepException {
         Set<Method> methods = FinderUtil.findMethods(clazz, Bean.class);
         Set<Field> fields = FinderUtil.findFields(clazz, Autowired.class);
 
         for (Field field : fields) {
-            String qualifier = field.isAnnotationPresent(Qualifier.class) ? field.getAnnotation(Qualifier.class).value() : null;
+            String qualifier = field.isAnnotationPresent(Qualifier.class)
+                    ? field.getAnnotation(Qualifier.class).value()
+                    : null;
             Object fieldInstance = _getBean(field.getType(), field.getName(), qualifier, false);
             field.set(classInstance, fieldInstance);
         }
@@ -154,14 +185,16 @@ public class ReactifyIoC {
         for (Method method : methods) {
             Class<?> beanType = method.getReturnType();
             Object beanInstance = method.invoke(classInstance);
-            String name = method.getAnnotation(Bean.class).value() != null ?
-                    method.getAnnotation(Bean.class).value() : beanType.getName();
+            String name = method.getAnnotation(Bean.class).value() != null
+                    ? method.getAnnotation(Bean.class).value()
+                    : beanType.getName();
             beanContainer.putBean(beanType, beanInstance, name);
         }
     }
 
-    private Object newInstanceWrapper(Class<?> clazz) throws InvocationTargetException,
-            IllegalAccessException, InstantiationException, NoSuchMethodException, IoCBeanNotFound, IoCCircularDepException {
+    private Object newInstanceWrapper(Class<?> clazz)
+            throws InvocationTargetException, IllegalAccessException, InstantiationException, NoSuchMethodException,
+                    IoCBeanNotFound, IoCCircularDepException {
         circularDependencyDetector.startInstantiation(clazz);
 
         try {
@@ -179,9 +212,9 @@ public class ReactifyIoC {
         }
     }
 
-    private Object newInstance(Class<?> clazz) throws IllegalAccessException,
-            InstantiationException, InvocationTargetException, NoSuchMethodException,
-            IoCBeanNotFound, IoCCircularDepException {
+    private Object newInstance(Class<?> clazz)
+            throws IllegalAccessException, InstantiationException, InvocationTargetException, NoSuchMethodException,
+                    IoCBeanNotFound, IoCCircularDepException {
         Constructor<?> annotatedConstructor = FinderUtil.findAnnotatedConstructor(clazz);
         Object instance;
         if (annotatedConstructor == null) {
@@ -196,10 +229,17 @@ public class ReactifyIoC {
         } else {
             Object[] parameters = new Object[annotatedConstructor.getParameterCount()];
             for (int i = 0; i < parameters.length; i++) {
-                String qualifier = annotatedConstructor.getParameters()[i].isAnnotationPresent(Qualifier.class) ?
-                        annotatedConstructor.getParameters()[i].getAnnotation(Qualifier.class).value() : null;
-                Object depInstance = _getBean(annotatedConstructor.getParameterTypes()[i],
-                        annotatedConstructor.getParameterTypes()[i].getName(), qualifier, true);
+                String qualifier = annotatedConstructor.getParameters()[i].isAnnotationPresent(Qualifier.class)
+                        ? annotatedConstructor
+                                .getParameters()[i]
+                                .getAnnotation(Qualifier.class)
+                                .value()
+                        : null;
+                Object depInstance = _getBean(
+                        annotatedConstructor.getParameterTypes()[i],
+                        annotatedConstructor.getParameterTypes()[i].getName(),
+                        qualifier,
+                        true);
                 parameters[i] = depInstance;
             }
             instance = annotatedConstructor.newInstance(parameters);
@@ -207,43 +247,52 @@ public class ReactifyIoC {
         return instance;
     }
 
-    private void setterInject(Class<?> clazz, Object classInstance) throws IllegalAccessException,
-            InvocationTargetException, NoSuchMethodException, InstantiationException, IoCBeanNotFound, IoCCircularDepException {
+    private void setterInject(Class<?> clazz, Object classInstance)
+            throws IllegalAccessException, InvocationTargetException, NoSuchMethodException, InstantiationException,
+                    IoCBeanNotFound, IoCCircularDepException {
         Set<Method> methods = FinderUtil.findMethods(clazz, Autowired.class);
         for (Method method : methods) {
             Object[] parameters = new Object[method.getParameterCount()];
             for (int i = 0; i < parameters.length; i++) {
-                String qualifier = method.getParameters()[i].isAnnotationPresent(Qualifier.class) ?
-                        method.getParameters()[i].getAnnotation(Qualifier.class).value() : null;
-                Object instance = _getBean(method.getParameterTypes()[i],
-                        method.getParameterTypes()[i].getName(), qualifier, true);
+                String qualifier = method.getParameters()[i].isAnnotationPresent(Qualifier.class)
+                        ? method.getParameters()[i]
+                                .getAnnotation(Qualifier.class)
+                                .value()
+                        : null;
+                Object instance = _getBean(
+                        method.getParameterTypes()[i], method.getParameterTypes()[i].getName(), qualifier, true);
                 parameters[i] = instance;
             }
             method.invoke(classInstance, parameters);
         }
     }
 
-    private void fieldInject(Class<?> clazz, Object classInstance) throws IllegalAccessException,
-            InstantiationException, InvocationTargetException, NoSuchMethodException, IoCBeanNotFound, IoCCircularDepException {
+    private void fieldInject(Class<?> clazz, Object classInstance)
+            throws IllegalAccessException, InstantiationException, InvocationTargetException, NoSuchMethodException,
+                    IoCBeanNotFound, IoCCircularDepException {
         Set<Field> fields = FinderUtil.findFields(clazz, Autowired.class);
         for (Field field : fields) {
-            String qualifier = field.isAnnotationPresent(Qualifier.class) ? field.getAnnotation(Qualifier.class).value() : null;
+            String qualifier = field.isAnnotationPresent(Qualifier.class)
+                    ? field.getAnnotation(Qualifier.class).value()
+                    : null;
             Object fieldInstance = _getBean(field.getType(), field.getName(), qualifier, true);
             field.set(classInstance, fieldInstance);
         }
     }
 
     @SuppressWarnings("unchecked")
-    private <T> T _getBean(Class<T> interfaceClass) throws InstantiationException, IllegalAccessException,
-            InvocationTargetException, NoSuchMethodException, IoCBeanNotFound, IoCCircularDepException {
+    private <T> T _getBean(Class<T> interfaceClass)
+            throws InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException,
+                    IoCBeanNotFound, IoCCircularDepException {
         return (T) _getBean(interfaceClass, null, null, false);
     }
 
-    private <T> Object _getBean(Class<T> interfaceClass, String fieldName, String qualifier, boolean createIfNotFound) throws
-            InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException,
-            IoCBeanNotFound, IoCCircularDepException {
-        Class<?> implementationClass = interfaceClass.isInterface() ?
-                implementationContainer.getImplementationClass(interfaceClass, fieldName, qualifier) : interfaceClass;
+    private <T> Object _getBean(Class<T> interfaceClass, String fieldName, String qualifier, boolean createIfNotFound)
+            throws InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException,
+                    IoCBeanNotFound, IoCCircularDepException {
+        Class<?> implementationClass = interfaceClass.isInterface()
+                ? implementationContainer.getImplementationClass(interfaceClass, fieldName, qualifier)
+                : interfaceClass;
         if (beanContainer.containsBean(implementationClass)) {
             if (qualifier != null) {
                 return beanContainer.getBean(implementationClass, qualifier);

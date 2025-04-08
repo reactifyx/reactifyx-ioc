@@ -1,3 +1,18 @@
+/*
+ * Copyright 2024-2025 the original author Hoàng Anh Tiến.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.reactifyx.utils;
 
 import java.io.File;
@@ -13,7 +28,8 @@ import java.util.*;
 import java.util.stream.Stream;
 
 public class ClassLoaderUtil {
-    public static List<Class<?>> getClasses(String packageName) throws IOException, URISyntaxException, ClassNotFoundException {
+    public static List<Class<?>> getClasses(String packageName)
+            throws IOException, URISyntaxException, ClassNotFoundException {
         List<Class<?>> classes = new ArrayList<>();
         String path = packageName.replace('.', '/');
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
@@ -31,7 +47,8 @@ public class ClassLoaderUtil {
                 allPaths.filter(Files::isRegularFile).forEach(file -> {
                     try {
                         String filePath = file.toString().replace('/', '.');
-                        String fileName = filePath.substring(filePath.indexOf(packageName), filePath.length() - extension.length());
+                        String fileName = filePath.substring(
+                                filePath.indexOf(packageName), filePath.length() - extension.length());
                         classes.add(Class.forName(fileName));
                     } catch (ClassNotFoundException | StringIndexOutOfBoundsException ignored) {
                     }
@@ -63,7 +80,9 @@ public class ClassLoaderUtil {
                 assert !file.getName().contains(".");
                 classes.addAll(findClasses(file, packageName + "." + file.getName()));
             } else if (file.getName().endsWith(".class")) {
-                String className = packageName + '.' + file.getName().substring(0, file.getName().length() - 6);
+                String className = packageName
+                        + '.'
+                        + file.getName().substring(0, file.getName().length() - 6);
                 classes.add(Class.forName(className));
             }
         }

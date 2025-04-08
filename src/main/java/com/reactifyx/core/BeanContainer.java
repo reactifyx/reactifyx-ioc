@@ -1,7 +1,21 @@
+/*
+ * Copyright 2024-2025 the original author Hoàng Anh Tiến.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.reactifyx.core;
 
 import com.reactifyx.exception.IoCException;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
@@ -43,10 +57,8 @@ public class BeanContainer {
 
         Object bean = map.get(name);
         if (bean == null) {
-            String errorMessage = "There are " + map.size()
-                    + " of bean " + name
-                    + " Expected single implementation or make use of"
-                    + " @Qualifier to resolve conflict";
+            String errorMessage = "There are " + map.size() + " of bean " + name
+                    + " Expected single implementation or make use of" + " @Qualifier to resolve conflict";
             throw new IoCException(errorMessage);
         }
 
