@@ -27,7 +27,31 @@ import java.nio.file.Path;
 import java.util.*;
 import java.util.stream.Stream;
 
+/**
+ * Utility class for dynamically loading classes from a given package.
+ * <p>
+ * Supports scanning from both the file system and JAR files. This is
+ * particularly useful for frameworks that perform classpath scanning for
+ * annotated components such as {@code @Component}, {@code @Bean}, etc.
+ */
 public class ClassLoaderUtil {
+
+    /**
+     * Scans the classpath and retrieves all classes under the specified package.
+     * <p>
+     * Handles both regular file system directories and classes packaged inside JAR
+     * files.
+     *
+     * @param packageName
+     *            the base package to scan (e.g., "com.example.myapp")
+     * @return a list of classes found in the specified package
+     * @throws IOException
+     *             if an I/O error occurs while reading from the classpath
+     * @throws URISyntaxException
+     *             if the resource URI syntax is invalid
+     * @throws ClassNotFoundException
+     *             if any of the classes cannot be loaded
+     */
     public static List<Class<?>> getClasses(String packageName)
             throws IOException, URISyntaxException, ClassNotFoundException {
         List<Class<?>> classes = new ArrayList<>();
@@ -68,6 +92,17 @@ public class ClassLoaderUtil {
         return classes;
     }
 
+    /**
+     * Recursively scans a directory to find all class files and load them.
+     *
+     * @param directory
+     *            the root directory to scan
+     * @param packageName
+     *            the package name corresponding to the directory
+     * @return a list of classes in the given directory (and subdirectories)
+     * @throws ClassNotFoundException
+     *             if a class cannot be loaded
+     */
     private static List<Class<?>> findClasses(File directory, String packageName) throws ClassNotFoundException {
         List<Class<?>> classes = new ArrayList<>();
         if (!directory.exists()) {

@@ -2,8 +2,8 @@ package com.reactifyx.configbean;
 
 import com.reactifyx.Autowired;
 import com.reactifyx.Component;
-import com.reactifyx.configbean.entity.DB;
 import com.reactifyx.configbean.entity.App;
+import com.reactifyx.configbean.entity.DB;
 
 @Component
 public class ClientClass {

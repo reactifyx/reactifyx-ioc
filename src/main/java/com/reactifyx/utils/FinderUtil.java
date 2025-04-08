@@ -23,7 +23,26 @@ import java.lang.reflect.Method;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * Utility class for reflection-based scanning of annotated constructors,
+ * fields, and methods.
+ * <p>
+ * Commonly used in dependency injection frameworks to locate elements annotated
+ * with annotations like {@link Autowired}, etc.
+ */
 public class FinderUtil {
+
+    /**
+     * Finds the constructor of the given class that is annotated with
+     * {@link Autowired}.
+     * <p>
+     * If multiple constructors are annotated, the first one found will be returned.
+     * Returns {@code null} if no such constructor is present.
+     *
+     * @param clazz
+     *            the class to inspect
+     * @return the annotated constructor, or {@code null} if not found
+     */
     public static Constructor<?> findAnnotatedConstructor(Class<?> clazz) {
         for (Constructor<?> constructor : clazz.getDeclaredConstructors()) {
             if (constructor.isAnnotationPresent(Autowired.class)) {
@@ -34,6 +53,19 @@ public class FinderUtil {
         return null;
     }
 
+    /**
+     * Finds all fields in the given class (and its superclasses) annotated with the
+     * specified annotation.
+     * <p>
+     * This method walks up the class hierarchy to collect inherited annotated
+     * fields.
+     *
+     * @param clazz
+     *            the class to scan
+     * @param annotationClass
+     *            the annotation to look for
+     * @return a set of fields annotated with the given annotation
+     */
     public static Set<Field> findFields(Class<?> clazz, Class<? extends Annotation> annotationClass) {
         Set<Field> set = new HashSet<>();
         while (clazz != null) {
@@ -48,6 +80,19 @@ public class FinderUtil {
         return set;
     }
 
+    /**
+     * Finds all methods in the given class (and its superclasses) annotated with
+     * the specified annotation.
+     * <p>
+     * Useful for detecting factory methods (e.g., {@code @Bean}) or lifecycle
+     * callbacks.
+     *
+     * @param clazz
+     *            the class to inspect
+     * @param annotationClass
+     *            the annotation to find
+     * @return a set of annotated methods found in the class hierarchy
+     */
     public static Set<Method> findMethods(Class<?> clazz, Class<? extends Annotation> annotationClass) {
         Set<Method> set = new HashSet<>();
         while (clazz != null) {

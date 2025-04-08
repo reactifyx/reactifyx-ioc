@@ -1,11 +1,11 @@
 package com.reactifyx.childparent;
 
-import com.reactifyx.core.ReactifyIoC;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import com.reactifyx.ComponentScan;
+import com.reactifyx.core.ReactifyIoC;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ComponentScan("com.reactifyx.childparent")
 public class ChildParentTest {

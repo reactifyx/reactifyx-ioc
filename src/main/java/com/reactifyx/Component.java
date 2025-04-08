@@ -20,6 +20,32 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * Marks a class as a component to be automatically detected and registered by
+ * the dependency injection container during classpath scanning.
+ * <p>
+ * Classes annotated with {@code @Component} are treated as candidates for
+ * instantiation and lifecycle management by the container. The container
+ * resolves their dependencies and may inject them into other components.
+ *
+ * <p>
+ * <strong>Usage example:</strong>
+ *
+ * <pre>{@code
+ * @Component
+ * public class UserService {
+ * 	// Injected dependencies and business logic
+ * }
+ * }</pre>
+ *
+ * <p>
+ * <strong>Target:</strong> Types (classes). <br>
+ * <strong>Retention:</strong> Runtime.
+ *
+ * @see Autowired
+ * @see Bean
+ * @see Configuration
+ */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface Component {}

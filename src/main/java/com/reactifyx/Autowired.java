@@ -17,6 +17,23 @@ package com.reactifyx;
 
 import java.lang.annotation.*;
 
+/**
+ * Marks a constructor, field, or method to be autowired by a dependency
+ * injection container.
+ * <p>
+ * When used on a field or method, the container will attempt to resolve and
+ * inject the appropriate dependency. When used on a constructor, it indicates
+ * that the constructor should be used for instantiating the bean with injected
+ * dependencies.
+ * <p>
+ * This annotation is typically processed at runtime by IoC frameworks such as
+ * Spring.
+ *
+ * <p>
+ * <strong>Applicable to:</strong> methods, constructors, and fields.
+ *
+ * @see Qualifier
+ */
 @Target({ElementType.METHOD, ElementType.CONSTRUCTOR, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented

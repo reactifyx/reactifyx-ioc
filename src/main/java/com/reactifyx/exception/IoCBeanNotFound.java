@@ -15,7 +15,28 @@
  */
 package com.reactifyx.exception;
 
+/**
+ * Exception thrown when the IoC container fails to locate a requested bean.
+ * <p>
+ * This typically occurs when:
+ * <ul>
+ * <li>No matching {@code @Component} or {@code @Bean} was found.</li>
+ * <li>A required qualifier was not resolved.</li>
+ * <li>The bean was not registered in the context.</li>
+ * </ul>
+ * <p>
+ * This exception is crucial for debugging misconfigured components or missing
+ * dependencies.
+ */
 public class IoCBeanNotFound extends Exception {
+
+    /**
+     * Constructs a new {@code IoCBeanNotFound} exception with the specified detail
+     * message.
+     *
+     * @param message
+     *            detailed message indicating the missing bean or cause
+     */
     public IoCBeanNotFound(String message) {
         super(message);
     }

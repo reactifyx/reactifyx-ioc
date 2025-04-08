@@ -33,13 +33,35 @@ import java.util.List;
 import java.util.Set;
 import org.reflections.Reflections;
 
+/**
+ * The main IoC container class for managing and injecting beans. This class
+ * scans the classpath for components, configurations, and beans, handles their
+ * instantiation, and supports constructor, field, and setter injection.
+ */
 public class ReactifyIoC {
+
+    /** Container that holds all initialized beans. */
     private final BeanContainer beanContainer = new BeanContainer();
+
+    /** Container that maps interfaces to their concrete implementation classes. */
     private final ImplementationContainer implementationContainer = new ImplementationContainer();
+
+    /** Detector for preventing circular dependencies during bean instantiation. */
     private final CircularDependencyDetector circularDependencyDetector = new CircularDependencyDetector();
 
+    /** Private constructor for singleton pattern-like instantiation. */
     private ReactifyIoC() {}
 
+    /**
+     * Initializes the IoC container by scanning the provided class and optional
+     * predefined beans.
+     *
+     * @param mainClass
+     *            the entry point class annotated with @ComponentScan
+     * @param predefinedBeans
+     *            manually instantiated beans to register
+     * @return the initialized instance of ReactifyIoC
+     */
     public static ReactifyIoC initBeans(Class<?> mainClass, Object... predefinedBeans) {
         try {
             ReactifyIoC instance = new ReactifyIoC();
@@ -58,6 +80,13 @@ public class ReactifyIoC {
         }
     }
 
+    /**
+     * Retrieves a bean instance by its class.
+     *
+     * @param clazz
+     *            the class of the bean to retrieve
+     * @return an instance of the requested bean
+     */
     public <T> T getBean(Class<T> clazz) {
         try {
             return _getBean(clazz);
@@ -71,10 +100,15 @@ public class ReactifyIoC {
         }
     }
 
+    /**
+     * Internal initialization wrapper that handles scanning and loading of all
+     * beans.
+     */
     private void initWrapper(Class<?> mainClass, Object[] predefinedBeans)
             throws IOException, ClassNotFoundException, InstantiationException, IllegalAccessException,
                     NoSuchMethodException, InvocationTargetException, IoCBeanNotFound, IoCCircularDepException,
                     URISyntaxException {
+        // Register manually provided beans
         if (predefinedBeans != null) {
             for (Object bean : predefinedBeans) {
                 Class<?>[] interfaces = bean.getClass().getInterfaces();
@@ -89,6 +123,7 @@ public class ReactifyIoC {
             }
         }
 
+        // Scan packages for components
         ComponentScan scan = mainClass.getAnnotation(ComponentScan.class);
         if (scan != null) {
             String[] packages = scan.value();
@@ -100,6 +135,10 @@ public class ReactifyIoC {
         }
     }
 
+    /**
+     * Core initialization logic that scans and registers all components and
+     * configurations.
+     */
     private void init(String packageName)
             throws IOException, InstantiationException, IllegalAccessException, NoSuchMethodException,
                     InvocationTargetException, IoCBeanNotFound, IoCCircularDepException, URISyntaxException,
@@ -112,6 +151,10 @@ public class ReactifyIoC {
         scanComponentClasses(classes);
     }
 
+    /**
+     * Scans for @Component and @Configuration classes and registers their
+     * implementation mappings.
+     */
     private void scanImplementations(String packageName) {
         Reflections reflections = new Reflections(packageName);
         Set<Class<?>> componentClasses = reflections.getTypesAnnotatedWith(Component.class);

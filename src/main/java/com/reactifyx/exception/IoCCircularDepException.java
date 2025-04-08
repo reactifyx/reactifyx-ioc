@@ -15,7 +15,34 @@
  */
 package com.reactifyx.exception;
 
+/**
+ * Exception thrown when a circular dependency is detected in the IoC container.
+ * <p>
+ * A circular dependency occurs when two or more beans depend on each other in a
+ * cycle, which prevents proper instantiation and injection.
+ * <p>
+ * Example:
+ *
+ * <pre>
+ * class A {
+ * 	&#64;Autowired
+ * 	B b;
+ * }
+ * class B {
+ * 	@Autowired
+ * 	A a;
+ * }
+ * </pre>
+ */
 public class IoCCircularDepException extends Exception {
+
+    /**
+     * Constructs a new {@code IoCCircularDepException} with the specified detail
+     * message.
+     *
+     * @param message
+     *            a description of the circular dependency detected
+     */
     public IoCCircularDepException(String message) {
         super(message);
     }

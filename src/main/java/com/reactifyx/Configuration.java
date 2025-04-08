@@ -20,6 +20,41 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * Indicates that the annotated class declares one or more {@link Bean} methods
+ * and may be processed by the dependency injection container to generate bean
+ * definitions.
+ * <p>
+ * Configuration classes are typically used to bootstrap the application
+ * context, define bean creation logic, and specify component scanning via
+ * {@link ComponentScan}.
+ *
+ * <p>
+ * <strong>Usage example:</strong>
+ *
+ * <pre>
+ * {
+ * 	&#64;code
+ * 	&#64;Configuration
+ * 	&#64;ComponentScan("com.example.app")
+ * 	public class AppConfig {
+ *
+ * 		@Bean
+ * 		public MyService myService() {
+ * 			return new MyServiceImpl();
+ * 		}
+ * 	}
+ * }
+ * </pre>
+ *
+ * <p>
+ * <strong>Target:</strong> Types (classes only). <br>
+ * <strong>Retention:</strong> Runtime.
+ *
+ * @see Bean
+ * @see ComponentScan
+ * @see Autowired
+ */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface Configuration {}

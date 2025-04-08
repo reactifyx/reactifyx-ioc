@@ -22,13 +22,59 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * Container class that maps interface types to their implementation classes. It
+ * supports storing and retrieving the implementation class for a given
+ * interface.
+ *
+ * <p>
+ * This is useful in an IoC context when multiple implementations exist, and we
+ * need to resolve a specific one either by field name or using a
+ * {@code @Qualifier}.
+ * </p>
+ */
 public class ImplementationContainer {
+
+    /**
+     * A map holding the relationship between implementation classes and their
+     * associated interface types. The key is the implementation class, the value is
+     * the interface it implements.
+     */
     private final Map<Class<?>, Class<?>> implementationsMap = new HashMap<>(10);
 
+    /**
+     * Registers an implementation class for a given interface.
+     *
+     * @param implementationClass
+     *            the actual implementation class
+     * @param interfaceClass
+     *            the interface that this implementation should be associated with
+     */
     public void putImplementationClass(Class<?> implementationClass, Class<?> interfaceClass) {
         implementationsMap.put(implementationClass, interfaceClass);
     }
 
+    /**
+     * Retrieves the implementation class associated with the provided interface.
+     *
+     * <p>
+     * If multiple implementations are found, this method attempts to resolve the
+     * correct one using either the {@code qualifier} (if provided) or the
+     * {@code fieldName}.
+     * </p>
+     *
+     * @param interfaceClass
+     *            the interface for which the implementation is needed
+     * @param fieldName
+     *            the name of the field being injected (used for resolution if
+     *            qualifier is missing)
+     * @param qualifier
+     *            the qualifier to disambiguate multiple implementations
+     * @return the resolved implementation class
+     * @throws IoCException
+     *             if no implementation is found, or if multiple exist without a way
+     *             to disambiguate
+     */
     public Class<?> getImplementationClass(Class<?> interfaceClass, final String fieldName, final String qualifier) {
         Set<Map.Entry<Class<?>, Class<?>>> implementationClasses = implementationsMap.entrySet().stream()
                 .filter(entry -> entry.getValue() == interfaceClass)

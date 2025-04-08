@@ -15,11 +15,33 @@
  */
 package com.reactifyx.exception;
 
+/**
+ * Custom runtime exception used within the IoC container.
+ * <p>
+ * Thrown when the dependency injection framework encounters an unrecoverable
+ * error during component scanning, instantiation, or wiring.
+ * <p>
+ * This exception wraps lower-level exceptions to provide meaningful context and
+ * consistent error handling across the IoC framework.
+ */
 public class IoCException extends RuntimeException {
+
+    /**
+     * Constructs a new IoCException with the specified cause.
+     *
+     * @param cause
+     *            the underlying exception that caused this failure
+     */
     public IoCException(Throwable cause) {
         super(cause);
     }
 
+    /**
+     * Constructs a new IoCException with the specified message.
+     *
+     * @param message
+     *            a detailed message describing the failure
+     */
     public IoCException(String message) {
         super(message);
     }

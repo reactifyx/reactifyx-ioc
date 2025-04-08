@@ -17,6 +17,43 @@ package com.reactifyx;
 
 import java.lang.annotation.*;
 
+/**
+ * Used to distinguish between multiple candidates when injecting dependencies
+ * of the same type.
+ * <p>
+ * When multiple beans of the same type exist in the container,
+ * {@code @Qualifier} can be used alongside {@link Autowired} (or equivalent) to
+ * specify exactly which bean should be injected.
+ *
+ * <p>
+ * <strong>Usage example:</strong>
+ *
+ * <pre>
+ * {@code
+ *   &#64;Component
+ *   &#64;Qualifier("fastRepo")
+ *   public class FastRepository implements Repository { ... }
+ *
+ *   &#64;Component
+ *   &#64;Qualifier("safeRepo")
+ *   public class SafeRepository implements Repository { ... }
+ *
+ *   &#64;Autowired
+ *   public MyService(@Qualifier("safeRepo") Repository repo) {
+ *       this.repo = repo;
+ *   }
+ * }
+ * </pre>
+ *
+ * <p>
+ * <strong>Target:</strong> Constructors, fields, methods, parameters, types,
+ * and annotations. <br>
+ * <strong>Retention:</strong> Runtime. <br>
+ * <strong>Inherited:</strong> Yes.
+ *
+ * @see Autowired
+ * @see Component
+ */
 @Target({
     ElementType.CONSTRUCTOR,
     ElementType.FIELD,
